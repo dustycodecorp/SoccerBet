@@ -1,5 +1,7 @@
 var app       =     require("express")();
-var mysql     =     require("mysql");
+//var mysql     =     require("mysql");
+var sqlite3   =     require("sqlite3").verbose();
+var db        =     new sqlite3.Database('./quiniela.db');
 var http      =     require("http").Server(app);
 var io        =     require("socket.io")(http);
 var path      =     require("path");
@@ -8,16 +10,6 @@ var express   =     require("express")
 var initload = false;
 var matches  = [];
 
-/* Creating POOL MySQL connection.*/
-
-var pool    =    mysql.createPool({
-      connectionLimit   :   100,
-      host              :   'localhost',
-      user              :   'root',
-      password          :   '',
-      database          :   'your_database_name',
-      debug             :   false
-});
 
 app.get("/",function(req,res){
     res.sendFile(__dirname + '/index.html');
@@ -44,8 +36,9 @@ io.on('connection',function(socket){
       console.log("data ==> "+ teams.away);
 
       add_match(teams, function(callback){
-          console.log("RES =>"+callback);
-          if (callback) {
+          console.log("RES => "+callback);
+          if (callback == null) {
+            console.log(this);
             io.emit('refresh matches',data);
           } else {
             io.emit('error');
@@ -68,113 +61,47 @@ io.on('connection',function(socket){
     //if (! initload) {
         // Initial app start, run db query
         var matches  = [];
-        pool.getConnection(function(err,connection){
-          var queryString = "SELECT * FROM matches order by created_at asc limit 15";
-        connection.query(queryString, function(err, rows, fields) {
-          if (err) throw err;
-          for (var i in rows) {
-            console.log('Match id: ', rows[i].id);
-            matches.push(rows[i]);
-          }
-          socket.emit('fetch matches', matches);
 
-        });
-      });
         initload = true
     //} else {
         // Initial notes already exist, send out
-        socket.emit('fetch matches', matches)
+        db.serialize(function() {
+          var rows = "";
+          db.all("SELECT * FROM matches order by created_at asc LIMIT 25", function(err, row) {
+          //console.log(row);
+          rows = row;
+          console.log(rows);
+          socket.emit('fetch matches', rows)
+          });
+          //socket.emit('fetch matches', row)
+        });
+
+
     //}
 
 
 });
 
 var add_status = function (status,callback) {
-    pool.getConnection(function(err,connection){
-        if (err) {
-          connection.release();
-          callback(false);
-          return;
-        }
-    connection.query("INSERT INTO `porra` (`s_text`) VALUES ('"+status+"')",function(err,rows){
-            connection.release();
-            if(!err) {
-              callback(true);
-            }
-        });
-     connection.on('error', function(err) {
-              callback(false);
-              return;
-        });
-    });
+
 }
 
 var add_match = function (teams,callback) {
     var home = teams.home;
     var away  = teams.away;
 
-    pool.getConnection(function(err,connection){
 
-        if (err) {
-          console.log("Error gettin conection to the databse");
-          connection.release();
-          callback(false);
-          return;
-        }
-    connection.query("INSERT INTO `matches` (`home_team`, `away_team`) VALUES ('"+home+"', '"+away+"')",function(err,rows){
-            connection.release();
-            if(!err) {
-              data = {
-                "home" : home,
-                "away" : away,
-                "id"   : rows.insertId
-              }
-              callback(data);
-            } else {
-              console.log("Error found in MySQL =>");
-              console.log(err);
-            }
-        });
-     connection.on('error', function(err) {
-              console.log("Error found =>");
-              console.log(err);
-              callback(false);
-              return;
-        });
-    });
+db.serialize(function() {
+  db.run("INSERT INTO `matches` (`home_team`, `away_team`) VALUES (?, ?)", [home, away], callback);
+});
+
+
+
 }
 
 var get_details = function (match_id,callback) {
     console.log("TRying to get details from match "+match_id);
-    pool.getConnection(function(err,connection){
 
-        if (err) {
-          console.log("Error gettin conection to the databse");
-          connection.release();
-          callback(false);
-          return;
-        }
-    connection.query("Select * from `matches` WHERE id = "+match_id+"",function(err,rows){
-            connection.release();
-            if(!err) {
-              data = {
-                "home" : rows[0].home_team,
-                "away" : rows[0].away_team,
-                "id"   : rows[0].id
-              }
-              callback(data);
-            } else {
-              console.log("Error found in MySQL =>");
-              console.log(err);
-            }
-        });
-     connection.on('error', function(err) {
-              console.log("Error found =>");
-              console.log(err);
-              callback(false);
-              return;
-        });
-    });
 }
 
 
