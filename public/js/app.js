@@ -19,8 +19,11 @@ $(document).ready(function(){
       });
 
       socket.on('refresh matches',function(data) {
+        console.log("Funcion refresh matches in app.js");
+        console.log("La informacion recibida en data es ==>");
+        console.log("Prueba de solo el id "+data.id);
         $("#matchlist").prepend(
-          '<li><a href="#" onclick="showDetails('+data.id+');">'+data.home+' vs '+data.away+'</a></li>'
+          '<li><a href="#" onclick="showDetails('+data.id+');">'+data.home_team+' vs '+data.away_team+'</a></li>'
         );
       });
 
@@ -38,4 +41,12 @@ $(document).ready(function(){
     showDetails = function showDetails(match_id) {
         socket.emit('getMatchDetails',match_id);
       }
+
+      socket.on('display_details',function(data) {
+        console.log("Reach display_details socket on -- hell yeah!");
+        $("#home").html('<h4>'+data.home_team+'<h4>');
+        $("#away").html('<h4>'+data.away_team+'<h4>');
+        console.log(data);
+      });
+
 });
