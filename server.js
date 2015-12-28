@@ -17,7 +17,7 @@ app.get("/",function(req,res){
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-/*  This is auto initiated event when Client connects to Your Machien.  */
+/*  This is auto initiated event when Client connects to Your Machine.  */
 
 io.on('connection',function(socket){
     console.log("A user is connected");
@@ -32,14 +32,17 @@ io.on('connection',function(socket){
     // });
 
     socket.on('addMatch',function(teams){
-      console.log("data ==> "+ teams.home);
-      console.log("data ==> "+ teams.away);
 
       add_match(teams, function(callback){
-          console.log("RES => "+callback);
           if (callback == null) {
+            console.log("Que llego aqui");
             console.log(this);
-            io.emit('refresh matches',data);
+            var information = {
+              "home_team" : teams.home,
+              "away_team" : teams.away,
+              "id"  : this.lastID
+            }
+            io.emit('refresh matches',information);
           } else {
             io.emit('error');
           }
@@ -79,6 +82,21 @@ io.on('connection',function(socket){
 
     //}
 
+    var get_details = function (match_id,callback) {
+    console.log("== Trying to get details from match => "+match_id);
+    db.serialize(function() {
+          var rows = "";
+          db.get("SELECT * FROM matches where id = ?", [match_id], function(err, row) {
+            if (err != null) {
+              console.log("error found");
+              console.log(err);
+            }
+          //console.log(row);
+          socket.emit('display_details', row)
+          });
+        });
+}
+
 
 });
 
@@ -99,12 +117,9 @@ db.serialize(function() {
 
 }
 
-var get_details = function (match_id,callback) {
-    console.log("TRying to get details from match "+match_id);
 
-}
 
 
 http.listen(3000,function(){
-    console.log("Listening on 3000");
+    console.log("Quiniela-o-matic is now running, listening on 3000");
 });
