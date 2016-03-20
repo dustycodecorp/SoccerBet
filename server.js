@@ -1,5 +1,4 @@
 var app       =     require("express")();
-//var mysql     =     require("mysql");
 var sqlite3   =     require("sqlite3").verbose();
 var db        =     new sqlite3.Database('./quiniela.db');
 var http      =     require("http").Server(app);
@@ -12,7 +11,7 @@ var matches  = [];
 
 
 app.get("/",function(req,res){
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/views/index.html');
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
