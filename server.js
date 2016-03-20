@@ -32,7 +32,7 @@ io.on('connection',function(socket){
 
     socket.on('addMatch',function(teams){
 
-      add_match(teams, function(callback){
+      add_match(teams, function(callback) {
           if (callback == null) {
             console.log("Que llego aqui");
             console.log(this);
