@@ -1,3 +1,4 @@
+
 var showDetails;
 $(document).ready(function(){
 
@@ -27,16 +28,16 @@ $(document).ready(function(){
         );
       });
 
-      $("#add_match_button").click(function(){
-        var home = $("#home_team").val();
-        var away = $("#away_team").val();
-        var data = {
-          home: home,
-          away: away
-        }
-        socket.emit('addMatch', data);
-        $('#addMatchModal').modal('hide');
-      });
+      // $("#add_match_button").click(function(){
+      //   var home = $("#home_team").val();
+      //   var away = $("#away_team").val();
+      //   var data = {
+      //     home: home,
+      //     away: away
+      //   }
+      //   socket.emit('addMatch', data);
+      //   $('#addMatchModal').modal('hide');
+      // });
 
     showDetails = function showDetails(match_id) {
         socket.emit('getMatchDetails',match_id);
