@@ -96,3 +96,4 @@ module.provider('$socket', function $socketProvider() {
         };
     };
 });
+//from https://github.com/tiagocparra/angularJS-socketIO

@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Quiniela-o-matic</title>
+    <title>Soccerbet</title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/jquery.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -12,12 +12,13 @@
     <script src = "js/app.js"></script>
     <script src="js/services/angular-socket.js"></script>
     <script src = "js/main.js"></script>
+    <script src = "js/controllers/addMatchModal.js"></script>
 
     </script>
 
     </script>
   </head>
-  <body ng-app="quinielaApp">
+  <body ng-app="soccerApp">
 
     <!-- Fixed navbar -->
         <nav class="navbar navbar-default navbar-fixed-top">
@@ -29,7 +30,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#">Quiniela-o-matic</a>
+              <a class="navbar-brand" href="#">SoccerBet</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
               <ul class="nav navbar-nav">
@@ -53,7 +54,7 @@
                 </div>
                 <ul class="nav nav-sidebar">
                     <li ng-repeat="match in matches">
-                      <a href="#" onclick="showDetails('+data.id+');">
+                      <a href="#" ng-click="matchDetails(match.id)">
                         {{match.home_team}} vs {{match.away_team}}
                       </a>
                     </li>
@@ -62,26 +63,71 @@
             </div>
             <div class="col-md-9">
               <div class="row" style="padding-top: 60px">
-                <div class="text-center">
+                <div class="text-center" ng-if="home_team != '' && away_yeam != ''">
                   <div class="col-md-6" id="home">
-                    <h4>Team A</h4>
+                    <h4>{{home_team}}</h4>
                   </div>
                   <div class="col-md-6" id="away">
-                    <h4>Team B</h4>
+                    <h4>{{away_team}}</h4>
                   </div>
-                   vs
+                  vs
                 </div>
               </div>
+              <div class="row" style="padding-top: 2%" ng-if="home_team != '' && away_yeam != ''">
+                <div class="col-md-12">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Local Score</th>
+                      <th>Away score</th>
+                      <th>Did Paid?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="prediction in predictions">
+                      <th scope="row">{{prediction.user_name}}</th>
+                      <td>2</td>
+                      <td>1</td>
+                      <td>awesome checkbox</td>
+                    </tr>
+                  </tbody>
+                </table>  
+                </div>
 
-		<input type="text" ng-model="yourName" placeholder="Enter a name here">
-      		<h1>Hello, {{ yourName }}!</h1>
+                  <div class="col-md-12">
+                  Add your own
+                    <table class="table table-striped">
+                      <tbody>
+                        <tr>
+                      <th scope="row">
+                        <input name="username"/>
+                      </th>
+                      <td>
+                        <input name="home_score"/>
+                      </td>
+                      <td>
+                        <input name="away_score"/>
+                      </td>
+                      <td>
+                        <input type="checkbox">
+                      </td>
+                      <td>
+                        <button class="btn btn-default">Save</button>
+                      </td>
+                    </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
 
-              </div>
             </div>
           </div>
+        </div>
 
           <!-- Modal -->
-          <div class="modal fade" id="addMatchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-controller="MatchesController">
+          <div class="modal fade" id="addMatchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-controller="addMatchModal">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -109,7 +155,7 @@
         <footer class="footer">
           <div class="container">
             <p class="text-muted text-right" style="color:lightgrey; padding-top: 2%">
-              <a href="https://github.com/jeop10/Quiniela-o-matic"><i class="fa fa-lg fa-github"></i> Github Repo</a>
+              <a href="https://github.com/dustycodecorp/SoccerBet"><i class="fa fa-lg fa-github"></i> Github Repo</a>
             </p>
           </div>
         </footer>

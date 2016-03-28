@@ -1,12 +1,11 @@
-# Quiniela-o-matic
-**[Please note that is is a work in progress, when a stable version is released this message will be removed]**
+# Soccerbet
 
-This a real-time quiniela app for soccer matches, the idea is simple you gather your friends all made their predictions
-of the match (previously registered) in the app and wait to the end of the match to see who won. Note: this app does not accept two equal predictions.
+This is a real-time tipster app for soccer matches, the idea is very simple gather your friends and make unique
+predictions about the outcome of the game, wait until the game is over and see which was right. 
 
 No money have to be involved here, it's just for fun.
 
-Database schematics is included and pull requests are very much welcomed.
+Pull requests are very much welcomed.
 
 Have fun!
 
@@ -15,10 +14,8 @@ Have fun!
 (soon)
 
 ### Instructions
-- git clone into your desired folder.
-- go into that folder and execute ``node server.js``. If you may want to executed as a daemon you 
-shold try something like ``nodemon server.js``, please do notice that if you chosse this option
-you will need to install [nodemon](https://github.com/remy/nodemon) first.
+- ``git clone https://github.com/dustycodecorp/SoccerBet`` into your desired folder.
+- go into that folder and execute ``node server.js``. If you prefer you can use something to make the server run as deamon, such as [nodemon](https://github.com/remy/nodemon) then you can execute ``nodemon server.js``.
 - You installation should now be running and listening on port 3000.  
 
 ### Know Issues:

@@ -72,7 +72,7 @@ io.on('connection',function(socket){
           db.all("SELECT * FROM matches order by created_at asc LIMIT 25", function(err, row) {
           //console.log(row);
           rows = row;
-          console.log(rows);
+          console.log("Returning stored matches");
           socket.emit('fetch matches', rows)
           });
           //socket.emit('fetch matches', row)
@@ -90,9 +90,18 @@ io.on('connection',function(socket){
               console.log("error found");
               console.log(err);
             }
-          //console.log(row);
-          socket.emit('display_details', row)
+          socket.emit('display_details', row);
           });
+
+          db.all("SELECT * FROM predictions WHERE match_id = ?", [match_id], function(err, predictions) {
+            if (err != null) {
+              console.log("error found when getting predictios");
+              console.log(err);
+            }
+            console.log(predictions);
+            socket.emit('display_predictions', predictions);
+          });  
+          
         });
 }
 
@@ -120,5 +129,5 @@ db.serialize(function() {
 
 
 http.listen(3000,function(){
-    console.log("Quiniela-o-matic is now running, listening on 3000");
+    console.log("SoccerBet is now running, listening on 3000");
 });
