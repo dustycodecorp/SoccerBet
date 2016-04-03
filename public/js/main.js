@@ -11,6 +11,7 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 	$scope.home_team 	= '';
 	$scope.away_team 	= '';
 	$scope.predictions 	= [];
+	$scope.prediction_username = "";	
 
 	//On events
 	$socket.on('fetch matches', function (data) {
@@ -32,17 +33,31 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
         console.log(data);
     });
 
+    $socket.on('refresh predictions',function(data) {
+        console.log("On event (refresh predicitions");
+        // $scope.home_team = data.home_team;
+        // $scope.away_team = data.away_team;
+
+        console.log(data);
+    });
+
     $socket.on('display_predictions',function(data) {
         console.log("Reach display_predictions socket on -- hell yeah!");
         $scope.predictions = data;
 
-        console.log(data);
+        // console.log(data);
     });
 
 	//Emit events
 	$scope.matchDetails = function matchDetails(data) {
 		$socket.emit('getMatchDetails', data);
 	};
+
+	$scope.addPrediction = function addPrediction(data) {
+		console.log("function to add prediction, es esta?");
+		console.log(data);
+		console.log($scope.prediction_username);
+	}
 
 	// showDetails = function showDetails(match_id) {
     //     socket.emit('getMatchDetails',match_id);

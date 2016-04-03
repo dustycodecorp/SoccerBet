@@ -13,6 +13,7 @@
     <script src="js/services/angular-socket.js"></script>
     <script src = "js/main.js"></script>
     <script src = "js/controllers/addMatchModal.js"></script>
+    <script src = "js/controllers/predictionFormController.js"></script>
 
     </script>
 
@@ -96,28 +97,33 @@
                 </div>
 
                   <div class="col-md-12">
-                  Add your own
-                    <table class="table table-striped">
-                      <tbody>
-                        <tr>
-                      <th scope="row">
-                        <input name="username"/>
-                      </th>
-                      <td>
-                        <input name="home_score"/>
-                      </td>
-                      <td>
-                        <input name="away_score"/>
-                      </td>
-                      <td>
-                        <input type="checkbox">
-                      </td>
-                      <td>
-                        <button class="btn btn-default">Save</button>
-                      </td>
-                    </tr>
-                      </tbody>
-                    </table>
+                     Add your own
+                     <form ng-controller="predictionFormController">
+                       <table class="table table-striped">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <input type="text" ng-model="username"/>
+                            </td>
+                            <td>
+                              <input type="text" ng-model="home_score"/>
+                            </td>
+                            <td>
+                              <input type="text" ng-model="away_score"/>
+                            </td>
+                            <td>
+                              <input type="text" ng-model="did_pay"/>
+                            </td>
+                            <td>
+                              <button type="submit" class="btn btn-default" ng-click="submit()">Save</button> 
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table> 
+                    </form>
+
+                      
+                    
                   </div>
                 </div>
                 

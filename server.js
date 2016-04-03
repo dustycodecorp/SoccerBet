@@ -18,17 +18,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 /*  This is auto initiated event when Client connects to Your Machine.  */
 
-io.on('connection',function(socket){
+io.on('connection',function(socket) {
     console.log("A user is connected");
-    // socket.on('test',function(status){
-    //   add_status(status,function(res){
-    //     if(res){
-    //         io.emit('refresh feed',status);
-    //     } else {
-    //         io.emit('error');
-    //     }
-    //   });
-    // });
 
     socket.on('addMatch',function(teams){
 
@@ -45,6 +36,19 @@ io.on('connection',function(socket){
           } else {
             io.emit('error');
           }
+      });
+    });
+
+    socket.on('addPrediction',function(prediction){
+
+      add_prediction(prediciton, function(callback) {
+        if (callback == null) {
+          console.log("Add Prediction -- Que llego aqui?");
+          console.log(this);
+          io.emit('refresh predictions', prediciton);
+        } else {
+          io.emit('error');
+        }
       });
     });
 
@@ -108,23 +112,29 @@ io.on('connection',function(socket){
 
 });
 
-var add_status = function (status,callback) {
-
-}
-
 var add_match = function (teams,callback) {
-    var home = teams.home;
-    var away  = teams.away;
+  var home = teams.home;
+  var away  = teams.away;
 
-
-db.serialize(function() {
-  db.run("INSERT INTO `matches` (`home_team`, `away_team`) VALUES (?, ?)", [home, away], callback);
-});
-
-
-
+  db.serialize(function() {
+    db.run("INSERT INTO `matches` (`home_team`, `away_team`) VALUES (?, ?)", [home, away], callback);
+  });
 }
 
+var add_prediction = function (prediction, callback) {
+  var match_id            = prediction.match_id; 
+  var home_team_score     = prediction.home_score;
+  var away_team_score     = prediction.away_score;
+  var user_name           = prediction.username;
+  var did_pay              = prediction.did_pay;
+
+  db.serialize(function() {
+    db.run("INSERT INTO `matches` "+
+      "(`match_id`, `home_team_score, away_team_score, user_name, did_pay`)"+
+      " VALUES (?, ?)",
+      [match_id, home_team_score, away_team_score, user_name, did_pay], callback);
+  });
+}
 
 
 
