@@ -41,12 +41,20 @@ io.on('connection',function(socket) {
 
     socket.on('addPrediction',function(prediction){
 
-      add_prediction(prediciton, function(callback) {
+      add_prediction(prediction, function(callback) {
         if (callback == null) {
-          console.log("Add Prediction -- Que llego aqui?");
-          console.log(this);
-          io.emit('refresh predictions', prediciton);
+					console.log("== Prediction saved succesfuly ==");
+					var information = {
+						"match_id":  this.lastID,
+						"user_name": prediction.username,
+						"home_team_score": prediction.home_score,
+						"away_team_score": prediction.away_score,
+						"did_pay": prediction.did_pay,
+					}
+          io.emit('refresh_predictions', information);
         } else {
+					console.log("== Error saving prediction ==");
+					console.log(callback);
           io.emit('error');
         }
       });
@@ -104,8 +112,8 @@ io.on('connection',function(socket) {
             }
             console.log(predictions);
             socket.emit('display_predictions', predictions);
-          });  
-          
+          });
+
         });
 }
 
@@ -122,16 +130,16 @@ var add_match = function (teams,callback) {
 }
 
 var add_prediction = function (prediction, callback) {
-  var match_id            = prediction.match_id; 
+  var match_id            = prediction.match_id;
   var home_team_score     = prediction.home_score;
   var away_team_score     = prediction.away_score;
   var user_name           = prediction.username;
-  var did_pay              = prediction.did_pay;
+  var did_pay             = prediction.did_pay;
 
   db.serialize(function() {
-    db.run("INSERT INTO `matches` "+
-      "(`match_id`, `home_team_score, away_team_score, user_name, did_pay`)"+
-      " VALUES (?, ?)",
+    db.run("INSERT INTO `predictions` "+
+      "(`match_id`, `home_team_score`, `away_team_score`, `user_name`, `did_pay`)"+
+      " VALUES (?, ?, ?, ?, ?)",
       [match_id, home_team_score, away_team_score, user_name, did_pay], callback);
   });
 }
