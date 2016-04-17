@@ -5,15 +5,23 @@
     <script src="js/jquery.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.js"></script>
+
+    <!-- Angular Material requires Angular.js Libraries -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
+
     <script src = "js/bootstrap.min.js"></script>
     <script src = "js/app.js"></script>
     <script src="js/services/angular-socket.js"></script>
     <script src = "js/main.js"></script>
     <script src = "js/controllers/addMatchModal.js"></script>
-    <script src = "js/controllers/predictionFormController.js"></script>
 
     </script>
 
@@ -55,7 +63,8 @@
                 </div>
                 <ul class="nav nav-sidebar">
                     <li ng-repeat="match in matches">
-                      <a href="#" ng-click="matchDetails(match.id)">
+                      <a class="md-primary" href="#" ng-click="matchDetails(match.id)">
+                      <i class="fa fa-angle-right" aria-hidden="true"></i>
                         {{match.home_team}} vs {{match.away_team}}
                       </a>
                     </li>
@@ -90,7 +99,11 @@
                       <th scope="row">{{prediction.user_name}}</th>
                       <td>{{prediction.home_team_score}}</td>
                       <td>{{prediction.away_team_score}}</td>
-                      <td> {{prediction.did_pay}} | must awesome checkbox</td>
+                      <td>
+                        <md-checkbox class="md-primary" ng-true-value="1" ng-false-value="0" ng-model="prediction.did_pay">
+                        </md-checkbox>
+                        | {{prediction.did_pay}}
+                    </td>
                     </tr>
                   </tbody>
                 </table>
@@ -162,7 +175,7 @@
         <footer class="footer">
           <div class="container">
             <p class="text-muted text-right" style="color:lightgrey; padding-top: 2%">
-              <a href="https://github.com/dustycodecorp/SoccerBet"><i class="fa fa-lg fa-github"></i> Github Repo</a>
+              <a href="https://github.com/dustycodecorp/SoccerBet" class="md-primary"><i class="fa fa-lg fa-github"></i> Github Repo</a>
             </p>
           </div>
         </footer>
