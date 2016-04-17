@@ -9,8 +9,6 @@ Pull requests are very much welcomed.
 
 Have fun!
 
-test
-
 ### Screen Shots
 (soon)
 
