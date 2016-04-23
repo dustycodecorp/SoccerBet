@@ -1,45 +1,9 @@
-var app = angular.module('soccerApp', [ 'socket.io', 'ngMaterial']);
+var app = angular.module('soccerApp', [ 'socket.io' ]);
 
 app.config(function ($socketProvider) {
 	$socketProvider.setConnectionUrl('');
 });
 
-app.config(function($mdThemingProvider) {
-
-    $mdThemingProvider.theme('default')
-          .primaryPalette('blue')
-          .accentPalette('indigo')
-          .warnPalette('red')
-          .backgroundPalette('grey');
-
-    $mdThemingProvider.theme('custom')
-          .primaryPalette('grey')
-          .accentPalette('deep-purple')
-          .warnPalette('green')
-
-    //create yr own palette 
-    $mdThemingProvider.definePalette('amazingPaletteName', {
-        '50': 'ffebee',
-        '100': 'ffcdd2',
-        '200': 'ef9a9a',
-        '300': 'e57373',
-        '400': 'ef5350',
-        '500': 'f44336',
-        '600': 'e53935',
-        '700': 'd32f2f',
-        '800': 'c62828',
-        '900': 'b71c1c',
-        'A100': 'ff8a80',
-        'A200': 'ff5252',
-        'A400': 'ff1744',
-        'A700': 'd50000',
-        'contrastDefaultColor': 'light',    // whether, by default, text         (contrast)
-                                    // on this palette should be dark or light
-        'contrastDarkColors': ['50', '100', //hues which contrast should be 'dark' by default
-         '200', '300', '400', 'A100'],
-        'contrastLightColors': undefined    // could also specify this if default was 'dark'
-    });
-});
 
 app.controller('MatchesController', function Ctrl($scope, $socket) {
 
@@ -71,16 +35,27 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
     });
 
     $socket.on('refresh_predictions', function(data) {
-			if ($scope.predictions.indexOf(data) == -1) {
-				$scope.predictions.push(data);
-			}
-    });
+			console.log(data);
+			console.log($scope.predictions);
+			var updated = false;
+	    angular.forEach($scope.predictions,function(value, index) {
+	      if (value.id == data.id) {
+					updated = true;
+					$scope.predictions[index] = data;
+				}
+	    });
+
+	    if (updated != true && $scope.predictions.indexOf(data) == -1) {
+				console.log("No esta en el array");
+	    	$scope.predictions.push(data);
+	    }
+
+});
 
     $socket.on('display_predictions',function(data) {
         console.log("Reach display_predictions socket on -- hell yeah!");
         $scope.predictions = data;
 
-        // console.log(data);
     });
 
 	//Emit events
@@ -88,30 +63,42 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 		$socket.emit('getMatchDetails', data);
 	};
 
-	$scope.submit = function addPrediction() {
+	$scope.submit = function addPrediction(pre) {
+
 		var data  = {
 			match_id: $scope.match_id,
-			username: this.user_name,
-			home_score: this.home_team_score,
-			away_score: this.away_team_score,
-			did_pay: this.did_pay,
+			username: pre.user_name,
+			home_score: pre.home_team_score,
+			away_score: pre.away_team_score,
+			did_pay: pre.did_pay,
 		}
 
 		$socket.emit('addPrediction', data);
 
 		//reset variables
-		this.user_name = "";
-		this.home_team_score = "";
-		this.away_team_score = "";
-		this.did_pay = "";
+		pre.user_name = "";
+		pre.home_team_score = "";
+		pre.away_team_score = "";
+		pre.did_pay = "";
+	}
+
+	$scope.changePayment = function(prediction) {
+
+		if (prediction.did_pay == 1) {
+			prediction.did_pay = 0;
+		} else {
+			prediction.did_pay = 1;
+		}
+
+		console.log("update prediction");
+		$socket.emit('updatePrediction', prediction);
+
+		//return value;
 	}
 
 	// showDetails = function showDetails(match_id) {
     //     socket.emit('getMatchDetails',match_id);
     //   }
-
-
-
 });
 
 

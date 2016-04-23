@@ -39,13 +39,14 @@ io.on('connection',function(socket) {
       });
     });
 
-    socket.on('addPrediction',function(prediction){
+    socket.on('addPrediction',function(prediction) {
 
       add_prediction(prediction, function(callback) {
         if (callback == null) {
 					console.log("== Prediction saved succesfuly ==");
 					var information = {
-						"match_id":  this.lastID,
+            "id": this.lastID,
+						"match_id":  prediction.match_id,
 						"user_name": prediction.username,
 						"home_team_score": prediction.home_score,
 						"away_team_score": prediction.away_score,
@@ -58,6 +59,26 @@ io.on('connection',function(socket) {
           io.emit('error');
         }
       });
+    });
+
+    socket.on('updatePrediction', function(prediction) {
+    	update_prediction(prediction, function(callback) {
+		if (callback == null) {
+			console.log("== Prediction updated successfuly == ");
+			// var information = {
+      //   "id": this.lastID,
+			// 	"match_id": prediction.match_id,
+			// 	"user_name": prediction.username,
+			// 	"home_team_score": prediction.home_score,
+			// 	"away_team_score": prediction.away_score,
+			// 	"did_pay": prediction.did_pay
+			// }
+			io.emit('refresh_predictions', prediction);
+		} else {
+			console.log("== Error updating prediction ==");
+			console.log(callback);
+		}
+	});
     });
 
     socket.on('getMatchDetails',function(match_id) {
@@ -144,8 +165,22 @@ var add_prediction = function (prediction, callback) {
   });
 }
 
+var update_prediction = function (prediction, callback) {
+  var match_id            = prediction.match_id;
+  var home_team_score     = prediction.home_team_score;
+  var away_team_score     = prediction.away_team_score;
+  var user_name           = prediction.username;
+  var did_pay             = prediction.did_pay;
 
+  console.log(" === AAAAA ==");
+  console.log(prediction);
 
+  db.serialize(function() {
+    db.run("UPDATE `predictions` SET "+
+      "`home_team_score` = ?, `away_team_score` = ?, `did_pay` = ? WHERE `id` = ?",
+      [home_team_score, away_team_score, did_pay, prediction.id], callback);
+  });
+}
 http.listen(3000,function(){
     console.log("SoccerBet is now running, listening on 3000");
 });
