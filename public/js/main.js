@@ -19,24 +19,18 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 	});
 
 	$socket.on('refresh matches', function (data) {
-		console.log('on addmatches function');
 		if ($scope.matches.indexOf(data) == -1) {
 			$scope.matches.push(data);
 		}
 	});
 
 	$socket.on('display_details',function(data) {
-        console.log("Reach display_details socket on -- hell yeah!");
         $scope.home_team = data.home_team;
         $scope.away_team = data.away_team;
 				$scope.match_id  = data.id;
-
-        console.log(data);
     });
 
     $socket.on('refresh_predictions', function(data) {
-			console.log(data);
-			console.log($scope.predictions);
 			var updated = false;
 	    angular.forEach($scope.predictions,function(value, index) {
 	      if (value.id == data.id) {
@@ -46,14 +40,12 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 	    });
 
 	    if (updated != true && $scope.predictions.indexOf(data) == -1) {
-				console.log("No esta en el array");
 	    	$scope.predictions.push(data);
 	    }
 
 });
 
     $socket.on('display_predictions',function(data) {
-        console.log("Reach display_predictions socket on -- hell yeah!");
         $scope.predictions = data;
 
     });
@@ -82,7 +74,9 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 		pre.did_pay = "";
 	}
 
-	$scope.changePayment = function(prediction) {
+	$scope.changePayment = function(prediction, sync = false) {
+
+		console.log(prediction);
 
 		if (prediction.did_pay == 1) {
 			prediction.did_pay = 0;
@@ -90,16 +84,10 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 			prediction.did_pay = 1;
 		}
 
-		console.log("update prediction");
-		$socket.emit('updatePrediction', prediction);
-
-		//return value;
+		if (sync) {
+			console.log("update prediction");
+			$socket.emit('updatePrediction', prediction);
+		}
 	}
 
-	// showDetails = function showDetails(match_id) {
-    //     socket.emit('getMatchDetails',match_id);
-    //   }
 });
-
-
-//probar esto --> http://stackoverflow.com/questions/31040770/socket-io-express-node-angular-notifications

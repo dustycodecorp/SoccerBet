@@ -1,184 +1,190 @@
 <html>
-  <head>
-    <title>Soccerbet</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<head>
+  <title>Soccerbet</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-    <!-- Angular Material requires Angular.js Libraries -->
-    <script src="js/angular.min.js"></script>
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="js/angular.min.js"></script>
 
 
-    <script src = "js/bootstrap.min.js"></script>
-    <script src = "js/app.js"></script>
-    <script src="js/services/angular-socket.js"></script>
-    <script src = "js/main.js"></script>
-    <script src = "js/controllers/addMatchModal.js"></script>
+  <script src = "js/bootstrap.min.js"></script>
+  <script src = "js/app.js"></script>
+  <script src="js/services/angular-socket.js"></script>
+  <script src = "js/main.js"></script>
+  <script src = "js/controllers/addMatchModal.js"></script>
 
-    </script>
+</script>
 
-    </script>
-  </head>
-  <body ng-app="soccerApp">
+</script>
+</head>
+<body ng-app="soccerApp">
 
-    <!-- Fixed navbar -->
-        <nav class="navbar navbar-default navbar-fixed-top">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#">SoccerBet</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-              <ul class="nav navbar-nav">
-              </ul>
-            </div><!--/.nav-collapse -->
+  <!-- Fixed navbar -->
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">SoccerBet</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+
+  <!-- Begin page content -->
+  <div class="container-fluid" ng-controller="MatchesController">
+    <div class="row">
+      <div class="col-md-3 sidebar">
+        <div style="padding-top: 60px">
+          <div class="row text-center">
+            <h4>
+              Matches
+              <button class="btn btn-small btn-default"
+              type="submit" data-toggle="modal" data-target="#addMatchModal" >
+              Add</button>
+            </h4>
           </div>
-        </nav>
-
-        <!-- Begin page content -->
-        <div class="container-fluid" ng-controller="MatchesController">
-          <div class="row">
-            <div class="col-md-3 sidebar">
-              <div style="padding-top: 60px">
-                <div class="row text-center">
-                  <h4>
-                    Matches
-                    <button class="btn btn-small btn-default"
-                    type="submit" data-toggle="modal" data-target="#addMatchModal" >
-                    Add</button>
-                  </h4>
-                </div>
-                <ul class="nav nav-sidebar">
-                    <li ng-repeat="match in matches">
-                      <a class="md-primary" href="#" ng-click="matchDetails(match.id)">
-                      <i class="fa fa-angle-right" aria-hidden="true"></i>
-                        {{match.home_team}} vs {{match.away_team}}
-                      </a>
-                    </li>
-                </ul>
-              </div>
+          <ul class="nav nav-sidebar">
+            <li ng-repeat="match in matches">
+              <a class="md-primary" href="#" ng-click="matchDetails(match.id)">
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                {{match.home_team}} vs {{match.away_team}}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="row" style="padding-top: 60px">
+          <div class="text-center" ng-if="home_team != '' && away_yeam != ''">
+            <div class="col-md-6" id="home">
+              <h4>{{home_team}}</h4>
             </div>
-            <div class="col-md-9">
-              <div class="row" style="padding-top: 60px">
-                <div class="text-center" ng-if="home_team != '' && away_yeam != ''">
-                  <div class="col-md-6" id="home">
-                    <h4>{{home_team}}</h4>
-                  </div>
-                  <div class="col-md-6" id="away">
-                    <h4>{{away_team}}</h4>
-                  </div>
-                  vs
-                </div>
-              </div>
-              <div class="row" style="padding-top: 2%" ng-if="home_team != '' && away_yeam != ''">
-                <div class="col-md-12">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Local Score</th>
-                      <th>Away score</th>
-                      <th>Did Paid?</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="prediction in predictions">
-                      <th scope="row">{{prediction.user_name}}</th>
-                      <td>{{prediction.home_team_score}}</td>
-                      <td>{{prediction.away_team_score}}</td>
-                      <td>
-			      <div class="btn" ng-click="changePayment(prediction)" ng-class="{'btn-success': prediction.did_pay, 'btn-danger': prediction.did_pay == 0 }">
-				      <div ng-if="prediction.did_pay == 1" >
-					SI
-				</div>
-				<div ng-if="prediction.did_pay == 0">
-					NO
-				</div>
-			      </div>
-			      <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="prediction.did_pay" value="{{prediction.did_pay}}">
-                        | {{prediction.did_pay}}
+            <div class="col-md-6" id="away">
+              <h4>{{away_team}}</h4>
+            </div>
+            vs
+          </div>
+        </div>
+        <div class="row" style="padding-top: 2%" ng-if="home_team != '' && away_yeam != ''">
+          <div class="col-md-12">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Local Score</th>
+                  <th>Away score</th>
+                  <th>Did Paid?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="prediction in predictions">
+                  <th scope="row">{{prediction.user_name}}</th>
+                  <td>{{prediction.home_team_score}}</td>
+                  <td>{{prediction.away_team_score}}</td>
+                  <td class="text-center">
+                    <div class="btn" ng-click="changePayment(prediction, true)" ng-class="{'btn-success': prediction.did_pay, 'btn-danger': prediction.did_pay == 0 }">
+                      <div ng-if="prediction.did_pay == 1" >
+                        YES
+                      </div>
+                      <div ng-if="prediction.did_pay == 0">
+                        NO
+                      </div>
+                    </div>
+                    <!-- | {{prediction.did_pay}} -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-md-12">
+            Add your own
+            <form name="predictionForm">
+              <!-- <form ng-controller="predictionFormController"> -->
+              <table class="table table-striped" ng-init="pre.did_pay = 0;">
+                <tbody>
+                  <tr>
+                    <td>
+                      <input type="text" ng-model="pre.user_name"/>
                     </td>
-                    </tr>
-                  </tbody>
-                </table>
-                </div>
-
-                  <div class="col-md-12">
-                     Add your own
-                     <form name="predictionForm">
-                     <!-- <form ng-controller="predictionFormController"> -->
-                       <table class="table table-striped">
-                        <tbody>
-                          <tr>
-                            <td>
-                              <input type="text" ng-model="pre.user_name"/>
-                            </td>
-                            <td>
-                              <input type="text" ng-model="pre.home_team_score"/>
-                            </td>
-                            <td>
-                              <input type="text" ng-model="pre.away_team_score"/>
-                            </td>
-                            <td>
-                              <input type="text" ng-model="pre.did_pay"/>
-                            </td>
-                            <td>
-                              <button type="submit" class="btn btn-default" ng-click="submit(pre)">Save</button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </form>
+                    <td>
+                      <input type="text" ng-model="pre.home_team_score"/>
+                    </td>
+                    <td>
+                      <input type="text" ng-model="pre.away_team_score"/>
+                    </td>
+                    <td>
+                      <div class="btn" ng-click="changePayment(pre)" ng-class="{'btn-success': pre.did_pay, 'btn-danger': pre.did_pay == 0 }">
+                        <div ng-if="pre.did_pay == 1" >
+                          YES
+                        </div>
+                        <div ng-if="pre.did_pay == 0">
+                          NO
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <button type="submit" class="btn btn-default" ng-click="submit(pre)">Save</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
 
 
 
-                  </div>
-                </div>
-
-
-            </div>
           </div>
         </div>
 
-          <!-- Modal -->
-          <div class="modal fade" id="addMatchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-controller="addMatchModal">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Add Match</h4>
-                </div>
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label for="home_team">Home Team</label>
-                    <input type="text" class="form-control" ng-model="home_team" placeholder="Red Team">
-                  </div>
-                  <div class="form-group">
-                    <label for="away_team">Away Team</label>
-                    <input type="text" class="form-control" ng-model="away_team" placeholder="Blu Team">
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" id="add_match_button"class="btn btn-primary" ng-click="saveMatch()">Add Match</button>
-                </div>
-              </div>
-            </div>
-          </div>
 
-        <footer class="footer">
-          <div class="container">
-            <p class="text-muted text-right" style="color:lightgrey; padding-top: 2%">
-              <a href="https://github.com/dustycodecorp/SoccerBet" class="md-primary"><i class="fa fa-lg fa-github"></i> Github Repo</a>
-            </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="addMatchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-controller="addMatchModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Add Match</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="home_team">Home Team</label>
+            <input type="text" class="form-control" ng-model="home_team" placeholder="Red Team">
           </div>
-        </footer>
-  </body>
+          <div class="form-group">
+            <label for="away_team">Away Team</label>
+            <input type="text" class="form-control" ng-model="away_team" placeholder="Blu Team">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" id="add_match_button"class="btn btn-primary" ng-click="saveMatch()">Add Match</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="text-muted text-right" style="color:lightgrey; padding-top: 2%">
+        <a href="https://github.com/dustycodecorp/SoccerBet" class="md-primary"><i class="fa fa-lg fa-github"></i> Github Repo</a>
+      </p>
+    </div>
+  </footer>
+</body>
 </html>
