@@ -63,22 +63,26 @@ io.on('connection',function(socket) {
 
     socket.on('updatePrediction', function(prediction) {
     	update_prediction(prediction, function(callback) {
-		if (callback == null) {
-			console.log("== Prediction updated successfuly == ");
-			// var information = {
-      //   "id": this.lastID,
-			// 	"match_id": prediction.match_id,
-			// 	"user_name": prediction.username,
-			// 	"home_team_score": prediction.home_score,
-			// 	"away_team_score": prediction.away_score,
-			// 	"did_pay": prediction.did_pay
-			// }
-			io.emit('refresh_predictions', prediction);
-		} else {
-			console.log("== Error updating prediction ==");
-			console.log(callback);
-		}
-	});
+        if (callback == null) {
+         console.log("== Prediction updated successfuly == ");
+         io.emit('refresh_predictions', prediction);
+       } else {
+         console.log("== Error updating prediction ==");
+         console.log(callback);
+       }
+     });
+    });
+    
+    socket.on('deletePrediction', function(prediction) {
+      delete_prediction(prediction, function(callback) {
+        if (callback == null) {
+          console.log("== Prediction deleted successfuly == ");
+          io.emit('delete_prediction', prediction);
+        } else {
+          console.log("== Error deleting prediction ==");
+          console.log(callback);
+        }
+      });
     });
 
     socket.on('getMatchDetails',function(match_id) {
@@ -172,15 +176,23 @@ var update_prediction = function (prediction, callback) {
   var user_name           = prediction.username;
   var did_pay             = prediction.did_pay;
 
-  console.log(" === AAAAA ==");
-  console.log(prediction);
-
   db.serialize(function() {
     db.run("UPDATE `predictions` SET "+
       "`home_team_score` = ?, `away_team_score` = ?, `did_pay` = ? WHERE `id` = ?",
       [home_team_score, away_team_score, did_pay, prediction.id], callback);
   });
 }
+
+var delete_prediction = function (prediction, callback) {
+
+  db.serialize(function() {
+    db.run("DELETE FROM `predictions` WHERE "+
+      "`id` = ?",
+      [prediction.id], callback);
+  });
+}
+
+
 http.listen(3000,function(){
     console.log("SoccerBet is now running, listening on 3000");
 });
