@@ -30,25 +30,31 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 				$scope.match_id  = data.id;
     });
 
-    $socket.on('refresh_predictions', function(data) {
-			var updated = false;
-	    angular.forEach($scope.predictions,function(value, index) {
-	      if (value.id == data.id) {
-					updated = true;
-					$scope.predictions[index] = data;
-				}
-	    });
+	$socket.on('refresh_predictions', function(data) {
+		var updated = false;
+		angular.forEach($scope.predictions,function(value, index) {
+			if (value.id == data.id) {
+				updated = true;
+				$scope.predictions[index] = data;
+			}
+		});
 
-	    if (updated != true && $scope.predictions.indexOf(data) == -1) {
-	    	$scope.predictions.push(data);
-	    }
-
-});
+		if (updated != true && $scope.predictions.indexOf(data) == -1) {
+			$scope.predictions.push(data);
+		}
+	});
 
     $socket.on('display_predictions',function(data) {
         $scope.predictions = data;
-
     });
+
+    $socket.on('delete_prediction', function(data) {
+    	angular.forEach($scope.predictions,function(value, index) {
+			if (value.id == data.id) {
+				$scope.predictions.splice(index, 1); 
+			}
+		});
+	});
 
 	//Emit events
 	$scope.matchDetails = function matchDetails(data) {
@@ -76,8 +82,6 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 
 	$scope.changePayment = function(prediction, sync = false) {
 
-		console.log(prediction);
-
 		if (prediction.did_pay == 1) {
 			prediction.did_pay = 0;
 		} else {
@@ -85,9 +89,12 @@ app.controller('MatchesController', function Ctrl($scope, $socket) {
 		}
 
 		if (sync) {
-			console.log("update prediction");
 			$socket.emit('updatePrediction', prediction);
 		}
+	}
+
+	$scope.deletePrediction = function(prediction) {
+		$socket.emit('deletePrediction', prediction);
 	}
 
 });
