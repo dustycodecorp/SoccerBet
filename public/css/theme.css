@@ -22,3 +22,20 @@ body > .container {
   background: lightgrey;
   height: 100%;
 }
+
+/* Tip table */
+.tip-table > thead > tr > th:first-child {
+  text-align: left;
+}
+
+.tip-table > thead > tr > th {
+  text-align: center;
+}
+
+.tip-table > tbody > tr > td:first-child {
+  text-align: left;
+}
+.tip-table > tbody > tr > td {
+  width: 20%;
+  text-align: center;
+}

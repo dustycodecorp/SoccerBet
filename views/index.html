@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-  <!-- Angular Material requires Angular.js Libraries -->
+  <!--  Angular.js Libraries -->
   <script src="js/angular.min.js"></script>
 
 
@@ -79,21 +79,22 @@
         </div>
         <div class="row" style="padding-top: 2%" ng-if="home_team != '' && away_yeam != ''">
           <div class="col-md-12">
-            <table class="table table-striped">
+            <table class="table table-striped tip-table">
               <thead>
                 <tr>
                   <th>Name</th>
                   <th>Local Score</th>
                   <th>Away score</th>
                   <th>Did Paid?</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr ng-repeat="prediction in predictions">
-                  <th scope="row">{{prediction.user_name}}</th>
+                  <td><strong>{{prediction.user_name}}</strong></td>
                   <td>{{prediction.home_team_score}}</td>
                   <td>{{prediction.away_team_score}}</td>
-                  <td class="text-center">
+                  <td>
                     <div class="btn" ng-click="changePayment(prediction, true)" ng-class="{'btn-success': prediction.did_pay, 'btn-danger': prediction.did_pay == 0 }">
                       <div ng-if="prediction.did_pay == 1" >
                         YES
@@ -102,7 +103,12 @@
                         NO
                       </div>
                     </div>
-                    <!-- | {{prediction.did_pay}} -->
+                  </td>
+                  <td>
+                    <!-- <button type="submit" class="btn btn-primary" ng-click=""><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> -->
+                    <button type="submit" class="btn btn-danger" ng-click="deletePrediction(prediction)">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -110,20 +116,23 @@
           </div>
 
           <div class="col-md-12">
-            Add your own
             <form name="predictionForm">
-              <!-- <form ng-controller="predictionFormController"> -->
-              <table class="table table-striped" ng-init="pre.did_pay = 0;">
+              <table class="table table-striped tip-table" ng-init="pre.did_pay = 0;">
+                <thead>
+                  <tr>
+                    <th colspan="5">Add your own</th>
+                  </tr>
+                </thead>
                 <tbody>
                   <tr>
                     <td>
-                      <input type="text" ng-model="pre.user_name"/>
+                      <input type="text" ng-model="pre.user_name" required/>
                     </td>
                     <td>
-                      <input type="text" ng-model="pre.home_team_score"/>
+                      <input type="number" ng-model="pre.home_team_score" required/>
                     </td>
                     <td>
-                      <input type="text" ng-model="pre.away_team_score"/>
+                      <input type="number" ng-model="pre.away_team_score" required/>
                     </td>
                     <td>
                       <div class="btn" ng-click="changePayment(pre)" ng-class="{'btn-success': pre.did_pay, 'btn-danger': pre.did_pay == 0 }">
