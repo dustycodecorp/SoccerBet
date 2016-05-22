@@ -1,6 +1,6 @@
 var app       =     require("express")();
 var sqlite3   =     require("sqlite3").verbose();
-var db        =     new sqlite3.Database('./quiniela.db');
+var db        =     new sqlite3.Database('./soccerbet.db');
 var http      =     require("http").Server(app);
 var io        =     require("socket.io")(http);
 var path      =     require("path");
