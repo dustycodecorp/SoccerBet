@@ -10,7 +10,11 @@ Pull requests are very much welcomed.
 Have fun!
 
 ### Screen Shots
-(soon)
+
+[Match](http://i.imgur.com/nR85Nbb.png)
+[Add Match](http://i.imgur.com/q0ItkW6.png)
+
+
 
 ### Instructions
 - ``git clone https://github.com/dustycodecorp/SoccerBet`` into your desired folder.
@@ -21,9 +25,10 @@ Have fun!
 
 ### Made Using:
   - [Express.js](http://expressjs.com/es/)
-  - Node.js
-  - jQuery
-  - Bootstrap
-  - Socket.io
+  - [Angular JS](https://angularjs.org/)
+  - [Node.js](https://nodejs.org/en/)
+  - [jQuery](https://jquery.com/)
+  - [Bootstrap](http://getbootstrap.com/)
+  - [Socket.io](http://socket.io/)
 
 
