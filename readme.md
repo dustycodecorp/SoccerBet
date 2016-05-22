@@ -9,11 +9,10 @@ Pull requests are very much welcomed.
 
 Have fun!
 
-### Screen Shots
+### Screen Shots:
 
-[Match](http://i.imgur.com/nR85Nbb.png)
-[Add Match](http://i.imgur.com/q0ItkW6.png)
-
+- [Match](http://i.imgur.com/nR85Nbb.png)
+- [Add Match](http://i.imgur.com/q0ItkW6.png)
 
 
 ### Instructions
